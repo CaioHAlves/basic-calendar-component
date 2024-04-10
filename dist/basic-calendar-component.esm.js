@@ -345,4 +345,4 @@ var Calendar = function Calendar(_ref) {
 };
 
 export { Calendar };
-//# sourceMappingURL=react-basic-calendar.esm.js.map
+//# sourceMappingURL=basic-calendar-component.esm.js.map

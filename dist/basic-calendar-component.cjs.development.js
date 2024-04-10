@@ -352,4 +352,4 @@ var Calendar = function Calendar(_ref) {
 };
 
 exports.Calendar = Calendar;
-//# sourceMappingURL=react-basic-calendar.cjs.development.js.map
+//# sourceMappingURL=basic-calendar-component.cjs.development.js.map

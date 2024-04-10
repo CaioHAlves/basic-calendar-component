@@ -2,7 +2,7 @@
 'use strict'
 
 if (process.env.NODE_ENV === 'production') {
-  module.exports = require('./react-basic-calendar.cjs.production.min.js')
+  module.exports = require('./basic-calendar-component.cjs.production.min.js')
 } else {
-  module.exports = require('./react-basic-calendar.cjs.development.js')
+  module.exports = require('./basic-calendar-component.cjs.development.js')
 }
