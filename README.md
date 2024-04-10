@@ -9,7 +9,7 @@
 ## Usage/Examples
 
 ```javascript
-import { Calendar } from 'react-basic-calendar'
+import { Calendar } from 'basic-calendar-component'
 
 function App() {
   return (
