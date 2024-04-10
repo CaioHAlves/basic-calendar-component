@@ -21,6 +21,7 @@ export const ConteinerCalendar = styled.div`
     border-radius: 0.25rem;
     font-family: "Roboto", "Helvetica", "Arial", sans-serif;
     margin: auto;
+    z-index: 1;
   
     .header {
       display: flex;
