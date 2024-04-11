@@ -201,7 +201,7 @@ var textActions = {
   }
 };
 
-var _excluded = ["defaultDate", "icon", "label", "placeholder", "forwardedRef", "error", "disabledPast", "disabledFuture", "onChange", "language", "variant", "disabled"];
+var _excluded = ["defaultDate", "icon", "label", "placeholder", "forwardedRef", "error", "disabledPast", "disabledFuture", "onChange", "language", "variant", "disabled", "inputName"];
 var Calendar = function Calendar(_ref) {
   var defaultDate = _ref.defaultDate,
     icon = _ref.icon,
@@ -218,6 +218,7 @@ var Calendar = function Calendar(_ref) {
     _ref$variant = _ref.variant,
     variant = _ref$variant === void 0 ? "outlined" : _ref$variant,
     disabled = _ref.disabled,
+    inputName = _ref.inputName,
     rest = _objectWithoutPropertiesLoose(_ref, _excluded);
   var arrayDaysWeekly = defaultArrayDaysWeekly[language];
   var arrayMonths = defaultArrayMonths[language];
@@ -326,7 +327,8 @@ var Calendar = function Calendar(_ref) {
     onChange: function onChange() {
       return (selectedDate == null ? void 0 : selectedDate.toLocaleDateString()) || "";
     },
-    disabled: disabled
+    disabled: disabled,
+    name: inputName
   }, rest)), React.createElement("label", {
     htmlFor: "input-calendar"
   }, label), React.createElement(IconButton, {

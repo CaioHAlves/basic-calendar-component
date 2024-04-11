@@ -20,6 +20,7 @@ interface IProps {
   language?: TCountry
   variant?: "outlined" | "default"
   disabled?: boolean
+  inputName?: string
 }
 
 export const Calendar = ({ 
@@ -35,6 +36,7 @@ export const Calendar = ({
   language = "en-US",
   variant = "outlined",
   disabled,
+  inputName,
   ...rest
 }: IProps) => {
 
@@ -141,6 +143,7 @@ export const Calendar = ({
           autoComplete='off'
           onChange={() => selectedDate?.toLocaleDateString() || ""}
           disabled={disabled}
+          name={inputName}
           {...rest}
         />
         <label htmlFor="input-calendar">{label}</label>
