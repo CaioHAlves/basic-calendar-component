@@ -14,6 +14,7 @@ interface IGenerateCalendar {
     defaultDate: Date | null;
     disabledPast?: boolean;
     disabledFuture?: boolean;
+    disabled?: boolean;
 }
-export declare const generateCalendar: ({ month, year, selectedDate, selectedDay, table, currentMonth, currentYear, onChange, setSelectedDay, setSelectedDate, defaultDate, disabledPast, disabledFuture }: IGenerateCalendar) => void;
+export declare const generateCalendar: ({ month, year, selectedDate, selectedDay, table, currentMonth, currentYear, onChange, setSelectedDay, setSelectedDate, defaultDate, disabledPast, disabledFuture, disabled }: IGenerateCalendar) => void;
 export {};

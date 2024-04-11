@@ -10,6 +10,7 @@ const App = () => {
         onChange={(date, dateToLocaleString) => console.log(date, dateToLocaleString)}
         language='pt-BR'
         label='Initial date'
+        defaultDate="2024-02-15"
       />
     </div>
   )

@@ -131,9 +131,9 @@ export const ConteinerCalendar = styled.div`
   
     .selected,
     td:hover {
-      color: #fff;
-      font-weight: 500;
-      background-color: #02226A;
+      color: #fff !important;
+      font-weight: 500 !important;
+      background-color: #02226A !important;
     }
 
     .disabled-past,
@@ -176,15 +176,16 @@ export const SInput = styled.div<{ error?: string }>`
   position: relative;
   width: 100%;
   font-family: 'Poppins', sans-serif;
-  color: ${p => p.error ? "#BB0A30" : "#35424F"};
-
+  
   &.outlined {
+    color: ${p => p.error ? "#BB0A30" : "#043D94"};
     border: 0.0625rem solid ${p => p.error ? "#BB0A30" : "#043D94"};
     border-radius: 0.25rem;
     
     input:not(:placeholder-shown):focus ~ label,
     input:not(:placeholder-shown):valid ~ label,
-    input:focus ~ label {
+    input:focus ~ label,
+    input:disabled ~ label {
       transform: translateY(-1.5rem) translateX(-20%) scale(0.8);
       background-color: #FFF;
       padding-inline: 0.3rem;
@@ -192,14 +193,37 @@ export const SInput = styled.div<{ error?: string }>`
       z-index: 0;
     }
   }
+  &.outlined.disabled {
+    color: ${p => p.error ? "#BB0A30" : "#91B7F0"};
+    border: 0.0625rem solid ${p => p.error ? "#BB0A30" : "#91B7F0"};
+    border-radius: 0.25rem;
+    
+    input:not(:placeholder-shown):focus ~ label,
+    input:not(:placeholder-shown):valid ~ label,
+    input:focus ~ label,
+    input:disabled ~ label {
+      transform: translateY(-1.5rem) translateX(-20%) scale(0.8);
+      background-color: #FFF;
+      padding-inline: 0.3rem;
+      color: ${p => p.error ? "#BB0A30" : "#91B7F0"};
+      z-index: 0;
+    }
+
+    svg {
+      fill: ${p => p.error ? "#BB0A30" : "#91B7F0"};
+      color: ${p => p.error ? "#BB0A30" : "#91B7F0"};
+    }
+  }
 
   &.default {
+    color: ${p => p.error ? "#BB0A30" : "#043D94"};
     border-bottom: 0.0625rem solid ${p => p.error ? "#BB0A30" : "#043D94"};
     align-items: baseline;
     
     input:not(:placeholder-shown):focus ~ label,
     input:not(:placeholder-shown):valid ~ label,
-    input:focus ~ label {
+    input:focus ~ label,
+    input:disabled ~ label {
       transform: translateY(-1rem) translateX(-20%) scale(0.8);
       background-color: #FFF;
       padding-inline: 0.3rem;
@@ -207,25 +231,46 @@ export const SInput = styled.div<{ error?: string }>`
       z-index: 0;
     }
   }
+  &.default.disabled {
+    color: ${p => p.error ? "#BB0A30" : "#91B7F0"};
+    border-bottom: 0.0625rem solid ${p => p.error ? "#BB0A30" : "#91B7F0"};
+    align-items: baseline;
+    
+    input:not(:placeholder-shown):focus ~ label,
+    input:not(:placeholder-shown):valid ~ label,
+    input:focus ~ label,
+    input:disabled ~ label {
+      transform: translateY(-1rem) translateX(-20%) scale(0.8);
+      background-color: #FFF;
+      padding-inline: 0.3rem;
+      color: ${p => p.error ? "#BB0A30" : "#91B7F0"};
+      z-index: 0;
+    }
+
+    svg {
+      fill: ${p => p.error ? "#BB0A30" : "#91B7F0"};
+      color: ${p => p.error ? "#BB0A30" : "#91B7F0"};
+    }
+  }
 
   input {
-      all: unset;
-      padding: 0 1rem;
-      transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-      min-height: 2rem; 
-      width: 100%;
-      caret-color: transparent;
-      cursor: pointer;
-    }
+    all: unset;
+    padding: 0 1rem;
+    transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    min-height: 2rem; 
+    width: 100%;
+    caret-color: transparent;
+    cursor: pointer;
+  }
 
-    label {
-      position: absolute;
-      top: 0.9375rem;
-      left: 0.9375rem;
-      z-index: 1;
-      pointer-events: none;
-      transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-    }
+  label {
+    position: absolute;
+    top: 0.9375rem;
+    left: 0.9375rem;
+    z-index: 1;
+    pointer-events: none;
+    transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
 
   svg {
     fill: ${p => p.error ? "#BB0A30" : "#043D94"};

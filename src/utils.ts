@@ -23,6 +23,7 @@ interface IGenerateCalendar {
   defaultDate: Date | null
   disabledPast?: boolean 
   disabledFuture?: boolean
+  disabled?: boolean
 }
 
 export const generateCalendar = ({ 
@@ -38,11 +39,12 @@ export const generateCalendar = ({
   setSelectedDate, 
   defaultDate, 
   disabledPast,
-  disabledFuture
+  disabledFuture,
+  disabled
 }: IGenerateCalendar) => {
 
   const paramSelectedDate = selectedDate || new Date()
-  const paramDefaultDateForDisableDates = defaultDate || new Date()
+  const paramDefaultDateForDisableDates = (disabledPast || disabledFuture) && (defaultDate || new Date())
 
   const firstDay = new Date(year, month, 1)
   const lastDay = new Date(year, month + 1, 0)
@@ -63,10 +65,15 @@ export const generateCalendar = ({
         const dayNumber = dayCounter
         const isSelected = dayNumber === paramSelectedDate.getDate() && currentMonth === (paramSelectedDate.getMonth() ?? 0) && currentYear === (paramSelectedDate.getFullYear() ?? 0)
         const cellDate = new Date(year, month, dayCounter)
-        const isDisabledPast = paramDefaultDateForDisableDates && disabledPast && (cellDate.setHours(0, 0, 0, 0,) < paramDefaultDateForDisableDates.setHours(0, 0, 0, 0,) || cellDate.setHours(0, 0, 0, 0,) < new Date().setHours(0, 0, 0, 0,))
-        const isDisabledFuture = paramDefaultDateForDisableDates && disabledFuture && (cellDate.setHours(0, 0, 0, 0,) > paramDefaultDateForDisableDates.setHours(0, 0, 0, 0,) || cellDate.setHours(0, 0, 0, 0,) > new Date().setHours(0, 0, 0, 0,))
+        const isDisabledPast = paramDefaultDateForDisableDates && (cellDate.setHours(0, 0, 0, 0,) < paramDefaultDateForDisableDates.setHours(0, 0, 0, 0,) || cellDate.setHours(0, 0, 0, 0,) < new Date().setHours(0, 0, 0, 0,))
+        const isDisabledFuture = paramDefaultDateForDisableDates && (cellDate.setHours(0, 0, 0, 0,) > paramDefaultDateForDisableDates.setHours(0, 0, 0, 0,) || cellDate.setHours(0, 0, 0, 0,) > new Date().setHours(0, 0, 0, 0,))
 
-        html += `<td class="${isSelected ? 'selected' : ''} ${isDisabledPast ? 'disabled-past' : undefined} ${isDisabledFuture ? 'disabled-future' : undefined}" data-day="${dayNumber}">${dayNumber}</td>`
+        html += `
+        <td 
+          class="${isSelected ? 'selected' : ''} ${isDisabledPast || disabled ? 'disabled-past' : ""} ${isDisabledFuture || disabled ? 'disabled-future' : ""}" data-day="${dayNumber}"
+        >
+          ${dayNumber}
+        </td>`
       } else {
         html += ""
       }
@@ -82,7 +89,7 @@ export const generateCalendar = ({
   const days = document.querySelectorAll("td")
 
   days.forEach((day) => {
-    if (day.innerText && !day.classList.contains('disabled-past') && !day.classList.contains('disabled-future')) {
+    if (day.innerText && !day.classList.contains('disabled-past') && !day.classList.contains('disabled-future') && !disabled) {
       day.addEventListener("click", function () {
         setSelectedDay(Number(day.dataset.day))
         const newSelectedDate = new Date(currentYear, currentMonth, Number(day.dataset.day))

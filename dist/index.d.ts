@@ -12,6 +12,7 @@ interface IProps {
     disabledFuture?: boolean;
     language?: TCountry;
     variant?: "outlined" | "default";
+    disabled?: boolean;
 }
-export declare const Calendar: ({ defaultDate, icon, label, placeholder, forwardedRef, error, disabledPast, disabledFuture, onChange, language, variant }: IProps) => React.JSX.Element;
+export declare const Calendar: ({ defaultDate, icon, label, placeholder, forwardedRef, error, disabledPast, disabledFuture, onChange, language, variant, disabled, ...rest }: IProps) => React.JSX.Element;
 export {};
