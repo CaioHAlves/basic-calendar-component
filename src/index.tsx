@@ -18,6 +18,7 @@ interface IProps {
   disabledPast?: boolean
   disabledFuture?: boolean
   language?: TCountry
+  variant?: "outlined" | "default"
 }
 
 export const Calendar = ({ 
@@ -30,7 +31,8 @@ export const Calendar = ({
   disabledPast,
   disabledFuture,
   onChange,
-  language = "en-US"
+  language = "en-US",
+  variant = "outlined"
 }: IProps) => {
 
   const arrayDaysWeekly = defaultArrayDaysWeekly[language]
@@ -124,18 +126,18 @@ export const Calendar = ({
 
   return (
     <>
-      <S.SInput error={error}>
+      <S.SInput error={error} className={variant}>
         <input
           type='text'
-          id="data-calendar"
-          value={selectedDate?.toLocaleDateString()}
+          id="input-calendar"
+          value={selectedDate?.toLocaleDateString() || ""}
           placeholder={placeholder}
           ref={forwardedRef}
           onClick={handleOpenCalendar}
           autoComplete='off'
-          onChange={(e) => e.target.value = selectedDate?.toLocaleDateString() || ""}
+          onChange={() => selectedDate?.toLocaleDateString() || ""}
         />
-        <label htmlFor="data-calendar">{label}</label>
+        <label htmlFor="input-calendar">{label}</label>
         <IconButton onClick={handleOpenCalendar}>{icon || <EventIcon />}</IconButton>
       </S.SInput>
       {openCalendar ?
