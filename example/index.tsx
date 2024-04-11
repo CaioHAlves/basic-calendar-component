@@ -9,8 +9,7 @@ const App = () => {
       <Calendar
         onChange={(date, dateToLocaleString) => console.log(date, dateToLocaleString)}
         language='pt-BR'
-        label='Data inicial'
-        defaultDate={new Date()}
+        label='Initial date'
       />
     </div>
   )

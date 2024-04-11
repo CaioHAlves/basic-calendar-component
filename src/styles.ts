@@ -19,7 +19,7 @@ export const ConteinerCalendar = styled.div`
     min-width: 19.375rem;
     max-height: 31.25rem;
     border-radius: 0.25rem;
-    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-family: 'Poppins', sans-serif;
     margin: auto;
     z-index: 1;
   
@@ -175,39 +175,57 @@ export const SInput = styled.div<{ error?: string }>`
   display: flex;
   position: relative;
   width: 100%;
-  color: ${p => p.error ? "#BB0A30" : "#35424F"};
-  border: 0.0625rem solid ${p => p.error ? "#BB0A30" : "#043D94"};
-  border-radius: 0.25rem;
   font-family: 'Poppins', sans-serif;
+  color: ${p => p.error ? "#BB0A30" : "#35424F"};
+
+  &.outlined {
+    border: 0.0625rem solid ${p => p.error ? "#BB0A30" : "#043D94"};
+    border-radius: 0.25rem;
+    
+    input:not(:placeholder-shown):focus ~ label,
+    input:not(:placeholder-shown):valid ~ label,
+    input:focus ~ label {
+      transform: translateY(-1.5rem) translateX(-20%) scale(0.8);
+      background-color: #FFF;
+      padding-inline: 0.3rem;
+      color: ${p => p.error ? "#BB0A30" : "#043D94"};
+      z-index: 0;
+    }
+  }
+
+  &.default {
+    border-bottom: 0.0625rem solid ${p => p.error ? "#BB0A30" : "#043D94"};
+    align-items: baseline;
+    
+    input:not(:placeholder-shown):focus ~ label,
+    input:not(:placeholder-shown):valid ~ label,
+    input:focus ~ label {
+      transform: translateY(-1rem) translateX(-20%) scale(0.8);
+      background-color: #FFF;
+      padding-inline: 0.3rem;
+      color: ${p => p.error ? "#BB0A30" : "#043D94"};
+      z-index: 0;
+    }
+  }
 
   input {
-    all: unset;
-    padding: 0 1rem;
-    transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-    min-height: 3rem; 
-    width: 100%;
-    caret-color: transparent;
-    cursor: pointer;
-  }
+      all: unset;
+      padding: 0 1rem;
+      transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+      min-height: 2rem; 
+      width: 100%;
+      caret-color: transparent;
+      cursor: pointer;
+    }
 
-  label {
-    position: absolute;
-    top: 0.9375rem;
-    left: 0.9375rem;
-    z-index: 1;
-    pointer-events: none;
-    transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  
-  input:not(:placeholder-shown):focus ~ label,
-  input:not(:placeholder-shown):valid ~ label,
-  input:focus ~ label {
-    transform: translateY(-1.5rem) translateX(-20%) scale(0.8);
-    background-color: #FFF;
-    padding-inline: 0.3rem;
-    color: ${p => p.error ? "#BB0A30" : "#043D94"};
-    z-index: 0;
-  }
+    label {
+      position: absolute;
+      top: 0.9375rem;
+      left: 0.9375rem;
+      z-index: 1;
+      pointer-events: none;
+      transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
   svg {
     fill: ${p => p.error ? "#BB0A30" : "#043D94"};
