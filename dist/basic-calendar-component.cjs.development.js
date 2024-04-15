@@ -41,74 +41,87 @@ var validateDate = function validateDate(date) {
   }
   return null;
 };
-var generateCalendar = function generateCalendar(_ref) {
-  var month = _ref.month,
-    year = _ref.year,
-    selectedDate = _ref.selectedDate,
-    selectedDay = _ref.selectedDay,
-    table = _ref.table,
-    currentMonth = _ref.currentMonth,
+var handleClick = function handleClick(event, _ref) {
+  var currentMonth = _ref.currentMonth,
     currentYear = _ref.currentYear,
-    onChange = _ref.onChange,
-    setSelectedDay = _ref.setSelectedDay,
     setSelectedDate = _ref.setSelectedDate,
-    defaultDate = _ref.defaultDate,
-    disabledPast = _ref.disabledPast,
-    disabledFuture = _ref.disabledFuture,
-    disabled = _ref.disabled;
+    onChange = _ref.onChange;
+  var classList = event.currentTarget.classList;
+  if (!classList.contains("disabled-past") && !classList.contains("disabled-future")) {
+    var dateForOnChange = new Date(currentYear + "-" + (currentMonth + 1) + "-" + event.currentTarget.dataset.day + " 00:00:00");
+    setSelectedDate(dateForOnChange);
+    onChange == null || onChange(dateForOnChange, dateForOnChange.toLocaleDateString());
+  }
+};
+var generateCalendar = function generateCalendar(_ref2) {
+  var month = _ref2.month,
+    year = _ref2.year,
+    selectedDate = _ref2.selectedDate,
+    currentMonth = _ref2.currentMonth,
+    currentYear = _ref2.currentYear,
+    onChange = _ref2.onChange,
+    setSelectedDate = _ref2.setSelectedDate,
+    defaultDate = _ref2.defaultDate,
+    disabledPast = _ref2.disabledPast,
+    disabledFuture = _ref2.disabledFuture,
+    disabled = _ref2.disabled;
   var paramSelectedDate = selectedDate || new Date();
-  var paramDefaultDateForDisableDates = (disabledPast || disabledFuture) && (defaultDate || new Date());
+  var paramDisableFuture = disabledFuture && (defaultDate || new Date());
+  var paramDisabledPast = disabledPast && (defaultDate || new Date());
   var firstDay = new Date(year, month, 1);
   var lastDay = new Date(year, month + 1, 0);
   var daysInMonth = lastDay.getDate();
   var dayCounter = 0;
-  var html = "";
+  var days = [];
   for (var i = 0; i < 6; i++) {
-    html += "<tr>";
+    var weekDays = [];
     for (var j = 0; j < 7; j++) {
       if (i === 0 && j < firstDay.getDay()) {
-        html += "<td></td>";
+        weekDays.push(React__default.createElement("button", {
+          key: "empty-" + j,
+          type: "button"
+        }));
       } else if (dayCounter < daysInMonth) {
         var _paramSelectedDate$ge, _paramSelectedDate$ge2;
         dayCounter++;
-        var dayNumber = dayCounter;
-        var isSelected = dayNumber === paramSelectedDate.getDate() && currentMonth === ((_paramSelectedDate$ge = paramSelectedDate.getMonth()) != null ? _paramSelectedDate$ge : 0) && currentYear === ((_paramSelectedDate$ge2 = paramSelectedDate.getFullYear()) != null ? _paramSelectedDate$ge2 : 0);
+        var isSelected = dayCounter === paramSelectedDate.getDate() && currentMonth === ((_paramSelectedDate$ge = paramSelectedDate.getMonth()) != null ? _paramSelectedDate$ge : 0) && currentYear === ((_paramSelectedDate$ge2 = paramSelectedDate.getFullYear()) != null ? _paramSelectedDate$ge2 : 0);
         var cellDate = new Date(year, month, dayCounter);
-        var isDisabledPast = paramDefaultDateForDisableDates && (cellDate.setHours(0, 0, 0, 0) < paramDefaultDateForDisableDates.setHours(0, 0, 0, 0) || cellDate.setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0));
-        var isDisabledFuture = paramDefaultDateForDisableDates && (cellDate.setHours(0, 0, 0, 0) > paramDefaultDateForDisableDates.setHours(0, 0, 0, 0) || cellDate.setHours(0, 0, 0, 0) > new Date().setHours(0, 0, 0, 0));
-        html += "\n        <td \n          class=\"" + (isSelected ? 'selected' : '') + " " + (isDisabledPast || disabled ? 'disabled-past' : "") + " " + (isDisabledFuture || disabled ? 'disabled-future' : "") + "\" data-day=\"" + dayNumber + "\"\n        >\n          " + dayNumber + "\n        </td>";
+        var isDisabledPast = paramDisabledPast && (cellDate.setHours(0, 0, 0, 0) < paramDisabledPast.setHours(0, 0, 0, 0) || cellDate.setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0));
+        var isDisabledFuture = paramDisableFuture && (cellDate.setHours(0, 0, 0, 0) > paramDisableFuture.setHours(0, 0, 0, 0) || cellDate.setHours(0, 0, 0, 0) > new Date().setHours(0, 0, 0, 0));
+        weekDays.push(React__default.createElement("button", {
+          key: "day-" + dayCounter,
+          className: (isSelected ? 'selected' : "") + " " + (isDisabledPast || disabled ? 'disabled-past' : "") + " " + (isDisabledFuture || disabled ? 'disabled-future' : ""),
+          "data-day": dayCounter,
+          disabled: disabled,
+          onClick: function onClick(event) {
+            return handleClick(event, {
+              currentMonth: currentMonth,
+              currentYear: currentYear,
+              setSelectedDate: setSelectedDate,
+              onChange: onChange
+            });
+          },
+          type: "button"
+        }, dayCounter));
       } else {
-        html += "";
+        weekDays.push(React__default.createElement("button", {
+          key: "empty-" + j,
+          type: "button"
+        }));
       }
     }
-    html += "</tr>";
+    days.push(React__default.createElement("div", {
+      key: "week-" + i,
+      className: "week"
+    }, weekDays));
   }
-  if (table) {
-    table.innerHTML = html;
-  }
-  var days = document.querySelectorAll("td");
-  days.forEach(function (day) {
-    if (day.innerText && !day.classList.contains('disabled-past') && !day.classList.contains('disabled-future') && !disabled) {
-      day.addEventListener("click", function () {
-        setSelectedDay(Number(day.dataset.day));
-        var newSelectedDate = new Date(currentYear, currentMonth, Number(day.dataset.day));
-        setSelectedDate(newSelectedDate);
-        if (selectedDay) {
-          var selectedDayElement = document.querySelector("[data-day=\"" + selectedDay + "\"]");
-          if (selectedDayElement) {
-            selectedDayElement.classList.remove("selected");
-          }
-        }
-        day.classList.add("selected");
-        var date = new Date(currentYear + "-" + (currentMonth + 1) + "-" + day.dataset.day + " 00:00:00");
-        onChange == null || onChange(date, date.toLocaleDateString());
-      });
-    }
-  });
+  return React__default.createElement("div", {
+    className: "calendar"
+  }, days);
 };
 
 var _templateObject, _templateObject2;
-var ConteinerCalendar = /*#__PURE__*/styled.div(_templateObject || (_templateObject = /*#__PURE__*/_taggedTemplateLiteralLoose(["\n  display: flex;\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0;\n  width: 100%;\n  height: 100%;\n  background: rgba(0, 0, 0, 0.5);\n\n  #content {\n    display: flex;\n    flex-direction: column;\n    align-items: flex-start;\n    max-width: 19.375rem;\n    min-width: 19.375rem;\n    max-height: 31.25rem;\n    border-radius: 0.25rem;\n    font-family: 'Poppins', sans-serif;\n    margin: auto;\n    z-index: 1;\n  \n    .header {\n      display: flex;\n      flex-direction: column;\n      width: 100%;\n      padding: 1rem;\n      background: #02226A;\n      border-radius: 0.5rem 0.5rem 0 0;\n      gap: 12px;\n    }\n\n    option {\n      color: #02226A;\n    }\n\n    #month,\n    #year {\n      display: flex;\n      border: none;\n      background: transparent;\n      appearance: none;\n      -webkit-appearance: none;\n      -moz-appearance: none;\n\n      font-size: 16px;\n      font-weight: 400;\n      line-height: 1.75;\n    }\n    #mont::-webkit-scrollbar,\n    #year::-webkit-scrollbar {\n      display: none;\n    }\n    #month {\n      letter-spacing: 0.00938em;\n      text-align: center;\n    }\n    #year {\n      width: min-content;\n      letter-spacing: 0.00938em;\n      color: rgba(255, 255, 255, 0.54);\n    }\n\n    #date-full {\n      font-size: 34px;\n      font-weight: 400;\n      line-height: 1.235;\n      letter-spacing: 0.00735em;\n      color: #fff;\n    }\n  \n    #body-calendar {\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      width: 100%;\n      padding: 1rem;\n      gap: 1.25rem;\n      background: #ffffff;\n      border-radius: 0 0 0.5rem 0.5rem;\n    }\n  \n    .nav-buttons {\n      display: flex;\n      width: 100%;\n      justify-content: space-between;\n    }\n  \n    .nav-buttons button {\n      display: flex;\n      align-items: center;\n      max-width: 1.875rem;\n      max-height: 1.875rem;\n      padding: 0;\n      border: none;\n      background: transparent;\n      cursor: pointer;\n    }\n  \n    #calendar {\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      width: 100%;\n    }\n  \n    table {\n      width: 100%;\n      border-collapse: collapse;\n      min-height: 19.0625rem;\n    }\n  \n    thead tr {\n      color: rgba(0, 0, 0, 0.38);\n      font-weight: 500;\n      font-size: 0.875rem;\n      height: 2.25rem;\n      width: 2.25rem;\n    }\n  \n    td {\n      cursor: pointer;\n      border-radius: 50%;\n      width: 2.25rem;\n      height: 2.25rem;\n      text-align: center;\n    }\n  \n    .selected,\n    td:hover {\n      color: #fff !important;\n      font-weight: 500 !important;\n      background-color: #02226A !important;\n    }\n\n    .disabled-past,\n    .disabled-future {\n      color: rgba(0, 0, 0, 0.38);\n      font-weight: 500;\n      background-color: #fff;\n    }\n  \n    .MuiSvgIcon-root {\n      color: rgba(0, 0, 0, 0.54);\n    }\n  \n    .actions {\n      display: flex;\n      align-items: center;\n      justify-content: end;\n      width: 100%;\n      gap: 0.625rem;\n  \n      button {\n        border: none;\n        background: transparent;\n        text-transform: uppercase;\n        color: #02226A;\n        font-weight: 500;\n        line-height: 0.1094rem;\n        font-size: 0.875rem;\n        min-width: 4rem;\n        border-radius: 0.25rem;\n        letter-spacing: 0.0286rem;\n        cursor: pointer;\n      }\n    }\n  }\n"])));
+var ConteinerCalendar = /*#__PURE__*/styled.div(_templateObject || (_templateObject = /*#__PURE__*/_taggedTemplateLiteralLoose(["\n  display: flex;\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0;\n  width: 100%;\n  height: 100%;\n  background: rgba(0, 0, 0, 0.5);\n\n  #content {\n    display: flex;\n    flex-direction: column;\n    align-items: flex-start;\n    max-width: 19.375rem;\n    min-width: 19.375rem;\n    max-height: 31.25rem;\n    border-radius: 0.25rem;\n    font-family: 'Poppins', sans-serif;\n    margin: auto;\n    z-index: 1;\n  \n    .header {\n      display: flex;\n      flex-direction: column;\n      width: 100%;\n      padding: 1rem;\n      background: #02226A;\n      border-radius: 0.5rem 0.5rem 0 0;\n      gap: 12px;\n    }\n\n    option {\n      color: #02226A;\n    }\n\n    #month,\n    #year {\n      display: flex;\n      border: none;\n      background: transparent;\n      appearance: none;\n      -webkit-appearance: none;\n      -moz-appearance: none;\n\n      font-size: 16px;\n      font-weight: 400;\n      line-height: 1.75;\n    }\n    #mont::-webkit-scrollbar,\n    #year::-webkit-scrollbar {\n      display: none;\n    }\n    #month {\n      letter-spacing: 0.00938em;\n      text-align: center;\n    }\n    #year {\n      width: min-content;\n      letter-spacing: 0.00938em;\n      color: rgba(255, 255, 255, 0.54);\n    }\n\n    #date-full {\n      font-size: 34px;\n      font-weight: 400;\n      line-height: 1.235;\n      letter-spacing: 0.00735em;\n      color: #fff;\n    }\n\n    #calendar {\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      width: 100%;\n    }\n  \n    #body-calendar {\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      width: 100%;\n      padding: 1rem;\n      gap: 1.25rem;\n      background: #ffffff;\n      border-radius: 0 0 0.5rem 0.5rem;\n\n      .first-line {\n        display: flex;\n        color: rgba(0, 0, 0, 0.38);\n        font-weight: 500;\n        font-size: 0.875rem;\n        justify-content: space-between;\n        width: 100%;\n\n        span {\n          width: 2.25rem;\n        }\n      }\n\n      .calendar {\n        display: flex;\n        flex-direction: column;\n        width: 100%;\n\n        .week {\n          display: flex;\n          width: 100%;\n          justify-content: space-between;\n\n          button {\n            display: flex;\n            align-items: center;\n            justify-content: center;\n            border: none;\n            background: transparent;\n            border-radius: 50%;\n            min-width: 2.25rem;\n            max-width: 2.25rem;\n            min-height: 2.25rem;\n            max-height: 2.25rem;\n            cursor: pointer;\n          }\n          .selected button {\n            color: #fff;\n          }\n        }\n      }\n    }\n  \n    .nav-buttons {\n      display: flex;\n      width: 100%;\n      justify-content: space-between;\n\n      button {\n        display: flex;\n        align-items: center;\n        max-width: 1.875rem;\n        max-height: 1.875rem;\n        padding: 0;\n        border: none;\n        background: transparent;\n        cursor: pointer;\n      }\n    }\n\n    .disabled-past,\n    .disabled-future {\n      color: rgba(0, 0, 0, 0.38);\n      font-weight: 500;\n      background-color: #fff;\n    }\n  \n    .MuiSvgIcon-root {\n      color: rgba(0, 0, 0, 0.54);\n    }\n\n    .selected {\n      color: #fff !important;\n      font-weight: 500 !important;\n      background-color: #02226A !important;\n    }\n  \n    .actions {\n      display: flex;\n      align-items: center;\n      justify-content: end;\n      width: 100%;\n      gap: 0.625rem;\n  \n      button {\n        border: none;\n        background: transparent;\n        text-transform: uppercase;\n        color: #02226A;\n        font-weight: 500;\n        line-height: 0.1094rem;\n        font-size: 0.875rem;\n        min-width: 4rem;\n        border-radius: 0.25rem;\n        letter-spacing: 0.0286rem;\n        cursor: pointer;\n      }\n    }\n  }\n"])));
 var SInput = /*#__PURE__*/styled.div(_templateObject2 || (_templateObject2 = /*#__PURE__*/_taggedTemplateLiteralLoose(["\n  display: flex;\n  position: relative;\n  width: 100%;\n  font-family: 'Poppins', sans-serif;\n  \n  &.outlined {\n    color: ", ";\n    border: 0.0625rem solid ", ";\n    border-radius: 0.25rem;\n    \n    input:not(:placeholder-shown):focus ~ label,\n    input:not(:placeholder-shown):valid ~ label,\n    input:focus ~ label,\n    input:disabled ~ label {\n      transform: translateY(-1.5rem) translateX(-20%) scale(0.8);\n      background-color: #FFF;\n      padding-inline: 0.3rem;\n      color: ", ";\n      z-index: 0;\n    }\n  }\n  &.outlined.disabled {\n    color: ", ";\n    border: 0.0625rem solid ", ";\n    border-radius: 0.25rem;\n    \n    input:not(:placeholder-shown):focus ~ label,\n    input:not(:placeholder-shown):valid ~ label,\n    input:focus ~ label,\n    input:disabled ~ label {\n      transform: translateY(-1.5rem) translateX(-20%) scale(0.8);\n      background-color: #FFF;\n      padding-inline: 0.3rem;\n      color: ", ";\n      z-index: 0;\n    }\n\n    svg {\n      fill: ", ";\n      color: ", ";\n    }\n  }\n\n  &.default {\n    color: ", ";\n    border-bottom: 0.0625rem solid ", ";\n    align-items: baseline;\n    \n    input:not(:placeholder-shown):focus ~ label,\n    input:not(:placeholder-shown):valid ~ label,\n    input:focus ~ label,\n    input:disabled ~ label {\n      transform: translateY(-1rem) translateX(-20%) scale(0.8);\n      background-color: #FFF;\n      padding-inline: 0.3rem;\n      color: ", ";\n      z-index: 0;\n    }\n  }\n  &.default.disabled {\n    color: ", ";\n    border-bottom: 0.0625rem solid ", ";\n    align-items: baseline;\n    \n    input:not(:placeholder-shown):focus ~ label,\n    input:not(:placeholder-shown):valid ~ label,\n    input:focus ~ label,\n    input:disabled ~ label {\n      transform: translateY(-1rem) translateX(-20%) scale(0.8);\n      background-color: #FFF;\n      padding-inline: 0.3rem;\n      color: ", ";\n      z-index: 0;\n    }\n\n    svg {\n      fill: ", ";\n      color: ", ";\n    }\n  }\n\n  input {\n    all: unset;\n    padding: 0 1rem;\n    transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);\n    min-height: 2rem; \n    width: 100%;\n    caret-color: transparent;\n    cursor: pointer;\n  }\n\n  label {\n    position: absolute;\n    top: 0.9375rem;\n    left: 0.9375rem;\n    z-index: 1;\n    pointer-events: none;\n    transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);\n  }\n\n  svg {\n    fill: ", ";\n    color: ", ";\n  }\n"])), function (p) {
   return p.error ? "#BB0A30" : "#043D94";
 }, function (p) {
@@ -229,46 +242,18 @@ var Calendar = function Calendar(_ref) {
     rest = _objectWithoutPropertiesLoose(_ref, _excluded);
   var arrayDaysWeekly = defaultArrayDaysWeekly[language];
   var arrayMonths = defaultArrayMonths[language];
-  var calendarRef = React.useRef(null);
   var _useState = React.useState(defaultDate ? validateDate(defaultDate).getFullYear() : new Date().getFullYear()),
     currentYear = _useState[0],
     setCurrentYear = _useState[1];
   var _useState2 = React.useState(defaultDate ? validateDate(defaultDate).getMonth() : new Date().getMonth()),
     currentMonth = _useState2[0],
     setCurrentMonth = _useState2[1];
-  var _useState3 = React.useState(defaultDate ? validateDate(defaultDate).getDate() : new Date().getDate()),
-    selectedDay = _useState3[0],
-    _setSelectedDay = _useState3[1];
-  var _useState4 = React.useState(validateDate(defaultDate)),
-    selectedDate = _useState4[0],
-    _setSelectedDate = _useState4[1];
-  var _useState5 = React.useState(false),
-    openCalendar = _useState5[0],
-    setOpenCalendar = _useState5[1];
-  React.useEffect(function () {
-    generateCalendar({
-      month: currentMonth,
-      year: currentYear,
-      currentMonth: currentMonth,
-      currentYear: currentYear,
-      selectedDate: selectedDate,
-      selectedDay: selectedDay,
-      setSelectedDate: function setSelectedDate(value) {
-        _setSelectedDate(value);
-      },
-      setSelectedDay: function setSelectedDay(value) {
-        _setSelectedDay(value);
-      },
-      table: calendarRef.current,
-      onChange: function onChange(date, dateToLocaleString) {
-        _onChange == null || _onChange(date, dateToLocaleString);
-      },
-      defaultDate: validateDate(defaultDate),
-      disabledPast: disabledPast,
-      disabledFuture: disabledFuture,
-      disabled: disabled
-    });
-  }, [currentYear, currentMonth, selectedDate, openCalendar]);
+  var _useState3 = React.useState(validateDate(defaultDate)),
+    selectedDate = _useState3[0],
+    _setSelectedDate = _useState3[1];
+  var _useState4 = React.useState(false),
+    openCalendar = _useState4[0],
+    setOpenCalendar = _useState4[1];
   var changeYear = function changeYear(event) {
     setCurrentYear(Number(event.target.value));
   };
@@ -385,12 +370,30 @@ var Calendar = function Calendar(_ref) {
     fontSize: 'small'
   }))), React__default.createElement("div", {
     id: "calendar"
-  }, React__default.createElement("table", null, React__default.createElement("thead", null, React__default.createElement("tr", null, arrayDaysWeekly.map(function (item, index) {
-    return React__default.createElement("th", {
+  }, React__default.createElement("div", {
+    id: "body-calendar"
+  }, React__default.createElement("div", {
+    className: "first-line"
+  }, arrayDaysWeekly.map(function (item, index) {
+    return React__default.createElement("span", {
       key: index
     }, item);
-  }))), React__default.createElement("tbody", {
-    ref: calendarRef
+  })), generateCalendar({
+    month: currentMonth,
+    year: currentYear,
+    currentMonth: currentMonth,
+    currentYear: currentYear,
+    selectedDate: selectedDate,
+    setSelectedDate: function setSelectedDate(value) {
+      _setSelectedDate(value);
+    },
+    onChange: function onChange(date, dateToLocaleString) {
+      _onChange == null || _onChange(date, dateToLocaleString);
+    },
+    defaultDate: validateDate(defaultDate),
+    disabledPast: disabledPast,
+    disabledFuture: disabledFuture,
+    disabled: disabled
   })), React__default.createElement("div", {
     className: 'actions'
   }, React__default.createElement("button", {
