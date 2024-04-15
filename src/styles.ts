@@ -71,6 +71,13 @@ export const ConteinerCalendar = styled.div`
       letter-spacing: 0.00735em;
       color: #fff;
     }
+
+    #calendar {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
   
     #body-calendar {
       display: flex;
@@ -81,59 +88,65 @@ export const ConteinerCalendar = styled.div`
       gap: 1.25rem;
       background: #ffffff;
       border-radius: 0 0 0.5rem 0.5rem;
+
+      .first-line {
+        display: flex;
+        color: rgba(0, 0, 0, 0.38);
+        font-weight: 500;
+        font-size: 0.875rem;
+        justify-content: space-between;
+        width: 100%;
+
+        span {
+          width: 2.25rem;
+        }
+      }
+
+      .calendar {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+
+        .week {
+          display: flex;
+          width: 100%;
+          justify-content: space-between;
+
+          button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: transparent;
+            border-radius: 50%;
+            min-width: 2.25rem;
+            max-width: 2.25rem;
+            min-height: 2.25rem;
+            max-height: 2.25rem;
+            cursor: pointer;
+          }
+          .selected button {
+            color: #fff;
+          }
+        }
+      }
     }
   
     .nav-buttons {
       display: flex;
       width: 100%;
       justify-content: space-between;
-    }
-  
-    .nav-buttons button {
-      display: flex;
-      align-items: center;
-      max-width: 1.875rem;
-      max-height: 1.875rem;
-      padding: 0;
-      border: none;
-      background: transparent;
-      cursor: pointer;
-    }
-  
-    #calendar {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-    }
-  
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-height: 19.0625rem;
-    }
-  
-    thead tr {
-      color: rgba(0, 0, 0, 0.38);
-      font-weight: 500;
-      font-size: 0.875rem;
-      height: 2.25rem;
-      width: 2.25rem;
-    }
-  
-    td {
-      cursor: pointer;
-      border-radius: 50%;
-      width: 2.25rem;
-      height: 2.25rem;
-      text-align: center;
-    }
-  
-    .selected,
-    td:hover {
-      color: #fff !important;
-      font-weight: 500 !important;
-      background-color: #02226A !important;
+
+      button {
+        display: flex;
+        align-items: center;
+        max-width: 1.875rem;
+        max-height: 1.875rem;
+        padding: 0;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+      }
     }
 
     .disabled-past,
@@ -145,6 +158,12 @@ export const ConteinerCalendar = styled.div`
   
     .MuiSvgIcon-root {
       color: rgba(0, 0, 0, 0.54);
+    }
+
+    .selected {
+      color: #fff !important;
+      font-weight: 500 !important;
+      background-color: #02226A !important;
     }
   
     .actions {

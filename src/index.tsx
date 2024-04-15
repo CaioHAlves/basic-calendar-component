@@ -1,4 +1,4 @@
-import React, { ChangeEvent, ReactNode, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, ReactNode, useState } from 'react';
 import { generateCalendar, validateDate } from './utils';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
@@ -23,12 +23,12 @@ interface IProps {
   inputName?: string
 }
 
-export const Calendar = ({ 
-  defaultDate, 
-  icon, 
-  label, 
-  placeholder = " ", 
-  forwardedRef, 
+export const Calendar = ({
+  defaultDate,
+  icon,
+  label,
+  placeholder = " ",
+  forwardedRef,
   error,
   disabledPast,
   disabledFuture,
@@ -43,38 +43,10 @@ export const Calendar = ({
   const arrayDaysWeekly = defaultArrayDaysWeekly[language]
   const arrayMonths = defaultArrayMonths[language]
 
-  const calendarRef = useRef<HTMLTableSectionElement | null>(null)
-
   const [currentYear, setCurrentYear] = useState<number>(defaultDate ? validateDate(defaultDate)!.getFullYear() : new Date().getFullYear())
   const [currentMonth, setCurrentMonth] = useState<number>(defaultDate ? validateDate(defaultDate)!.getMonth() : new Date().getMonth())
-  const [selectedDay, setSelectedDay] = useState<number | null>(defaultDate ? validateDate(defaultDate)!.getDate() : new Date().getDate())
   const [selectedDate, setSelectedDate] = useState<Date | null>(validateDate(defaultDate))
   const [openCalendar, setOpenCalendar] = useState(false)
-
-  useEffect(() => {
-    generateCalendar({
-      month: currentMonth,
-      year: currentYear,
-      currentMonth,
-      currentYear,
-      selectedDate,
-      selectedDay,
-      setSelectedDate(value) {
-        setSelectedDate(value)
-      },
-      setSelectedDay(value) {
-        setSelectedDay(value)
-      },
-      table: calendarRef.current,
-      onChange(date, dateToLocaleString) {
-        onChange?.(date, dateToLocaleString)
-      },
-      defaultDate: validateDate(defaultDate),
-      disabledPast,
-      disabledFuture,
-      disabled
-    })
-  }, [currentYear, currentMonth, selectedDate, openCalendar])
 
   const changeYear = (event: ChangeEvent<HTMLSelectElement>) => {
     setCurrentYear(Number(event.target.value))
@@ -180,16 +152,30 @@ export const Calendar = ({
                 </button>
               </div>
               <div id="calendar">
-                <table>
-                  <thead>
-                    <tr>
-                      {arrayDaysWeekly.map((item, index) => (
-                        <th key={index}>{item}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody ref={calendarRef}></tbody>
-                </table>
+                <div id="body-calendar">
+                  <div className="first-line">
+                    {arrayDaysWeekly.map((item, index) => (
+                      <span key={index}>{item}</span>
+                    ))}
+                  </div>
+                  {generateCalendar({
+                    month: currentMonth,
+                    year: currentYear,
+                    currentMonth,
+                    currentYear,
+                    selectedDate,
+                    setSelectedDate(value) {
+                      setSelectedDate(value)
+                    },
+                    onChange(date, dateToLocaleString) {
+                      onChange?.(date, dateToLocaleString)
+                    },
+                    defaultDate: validateDate(defaultDate),
+                    disabledPast,
+                    disabledFuture,
+                    disabled
+                  })}
+                </div>
                 <div className='actions'>
                   <button onClick={handleCancel}>{textActions[language].cancel}</button>
                   <button onClick={handleConfirm}>{textActions[language].confirm}</button>
@@ -198,7 +184,7 @@ export const Calendar = ({
             </div>
           </div>
         </S.ConteinerCalendar>
-      : null}
+        : null}
     </>
   )
 }
