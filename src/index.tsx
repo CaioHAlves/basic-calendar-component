@@ -21,6 +21,10 @@ interface IProps {
   variant?: "outlined" | "default"
   disabled?: boolean
   inputName?: string
+  dataLanguage?: {
+    daysOfTheWeek: Array<string | number>
+    months: Array<string | number>
+  }
 }
 
 export const Calendar = ({
@@ -37,15 +41,17 @@ export const Calendar = ({
   variant = "outlined",
   disabled,
   inputName,
+  dataLanguage,
   ...rest
 }: IProps) => {
 
-  const arrayDaysWeekly = defaultArrayDaysWeekly[language]
-  const arrayMonths = defaultArrayMonths[language]
+  const arrayDaysWeekly = dataLanguage && dataLanguage.daysOfTheWeek.length === 7 ? dataLanguage.daysOfTheWeek : defaultArrayDaysWeekly[language]
+  const arrayMonths = dataLanguage && dataLanguage.months.length === 12 ? dataLanguage.months : defaultArrayMonths[language]
 
   const [currentYear, setCurrentYear] = useState<number>(defaultDate ? validateDate(defaultDate)!.getFullYear() : new Date().getFullYear())
   const [currentMonth, setCurrentMonth] = useState<number>(defaultDate ? validateDate(defaultDate)!.getMonth() : new Date().getMonth())
   const [selectedDate, setSelectedDate] = useState<Date | null>(validateDate(defaultDate))
+  const [currentSelectDate, setCurrentSelectDate] = useState<Date | null>(validateDate(defaultDate))
   const [openCalendar, setOpenCalendar] = useState(false)
 
   const changeYear = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -92,13 +98,14 @@ export const Calendar = ({
 
   const handleConfirm = () => {
     if (onChange && selectedDate) {
+      setCurrentSelectDate(selectedDate)
       onChange(selectedDate, selectedDate.toLocaleDateString())
     }
     handleOpenCalendar()
   }
 
   const handleCancel = () => {
-    setSelectedDate(validateDate(defaultDate))
+    setSelectedDate(currentSelectDate)
     handleOpenCalendar()
   }
 
@@ -123,31 +130,31 @@ export const Calendar = ({
       </S.SInput>
       {openCalendar ?
         <S.ConteinerCalendar role="dialog" id="dialog">
-          <div id='content'>
-            <div className="header">
-              <select id="year" onChange={changeYear} value={currentYear} className="select">
+          <div id='calendar-content'>
+            <div className="header-calendar">
+              <select id="select-year" onChange={changeYear} value={currentYear} className="select-year">
                 {generateOptionsYear().map((item, index) => (
                   <option value={item.value} key={index}>
                     {item.label}
                   </option>
                 ))}
               </select>
-              <span id="date-full">{arrayDaysWeekly[selectedDate?.getDay() || 0]}, {arrayMonths[selectedDate?.getMonth() || currentMonth]} {selectedDate?.getDate()}</span>
+              <span id="date-string">{arrayDaysWeekly[selectedDate?.getDay() || 0]}, {arrayMonths[selectedDate?.getMonth() || currentMonth]} {selectedDate?.getDate()}</span>
             </div>
 
             <div id="body-calendar">
               <div className="nav-buttons">
-                <button id="previous" onClick={prevMonth}>
+                <button id="previous-month" onClick={prevMonth}>
                   <ArrowBackIosIcon fontSize='small' />
                 </button>
-                <select id="month" onChange={changeMonth} value={currentMonth} className="select">
+                <select id="select-month" onChange={changeMonth} value={currentMonth} className="select-month">
                   {arrayMonths.map((item, index) => (
                     <option value={index} key={index}>
                       {item}
                     </option>
                   ))}
                 </select>
-                <button id="next" onClick={nextMonth}>
+                <button id="next-month" onClick={nextMonth}>
                   <ArrowForwardIosIcon fontSize='small' />
                 </button>
               </div>
@@ -166,9 +173,6 @@ export const Calendar = ({
                     selectedDate,
                     setSelectedDate(value) {
                       setSelectedDate(value)
-                    },
-                    onChange(date, dateToLocaleString) {
-                      onChange?.(date, dateToLocaleString)
                     },
                     defaultDate: validateDate(defaultDate),
                     disabledPast,

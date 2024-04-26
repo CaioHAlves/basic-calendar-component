@@ -11,7 +11,7 @@ export const ConteinerCalendar = styled.div`
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
 
-  #content {
+  #calendar-content {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -23,7 +23,7 @@ export const ConteinerCalendar = styled.div`
     margin: auto;
     z-index: 1;
   
-    .header {
+    .header-calendar {
       display: flex;
       flex-direction: column;
       width: 100%;
@@ -37,8 +37,8 @@ export const ConteinerCalendar = styled.div`
       color: #02226A;
     }
 
-    #month,
-    #year {
+    #select-month,
+    #select-year {
       display: flex;
       border: none;
       background: transparent;
@@ -49,22 +49,23 @@ export const ConteinerCalendar = styled.div`
       font-size: 16px;
       font-weight: 400;
       line-height: 1.75;
+      cursor: pointer;
     }
-    #mont::-webkit-scrollbar,
-    #year::-webkit-scrollbar {
+    #select-month::-webkit-scrollbar,
+    #select-year::-webkit-scrollbar {
       display: none;
     }
-    #month {
+    #select-month {
       letter-spacing: 0.00938em;
       text-align: center;
     }
-    #year {
+    #select-year {
       width: min-content;
       letter-spacing: 0.00938em;
       color: rgba(255, 255, 255, 0.54);
     }
 
-    #date-full {
+    #date-string {
       font-size: 34px;
       font-weight: 400;
       line-height: 1.235;
@@ -99,6 +100,7 @@ export const ConteinerCalendar = styled.div`
 
         span {
           width: 2.25rem;
+          text-align: center;
         }
       }
 

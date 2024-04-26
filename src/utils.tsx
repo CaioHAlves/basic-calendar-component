@@ -6,7 +6,6 @@ interface IGenerateCalendar {
   year: number
   currentMonth: number
   currentYear: number
-  onChange?: (date: Date, dateToLocaleString: string) => void
   setSelectedDate: (value: React.SetStateAction<Date | null>) => void
   defaultDate: Date | null
   disabledPast?: boolean 
@@ -17,7 +16,6 @@ interface IGenerateCalendar {
 interface IHandleClick {
   currentYear: number
   currentMonth: number
-  onChange?: (date: Date, dateToLocaleString: string) => void
   setSelectedDate: (value: React.SetStateAction<Date | null>) => void
 }
 
@@ -32,14 +30,13 @@ export const validateDate = (date?: string | Date) => {
   return null
 }
 
-const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, { currentMonth, currentYear, setSelectedDate, onChange }: IHandleClick) => {
+const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, { currentMonth, currentYear, setSelectedDate }: IHandleClick) => {
   const classList = event.currentTarget.classList 
 
   if (!classList.contains("disabled-past") && !classList.contains("disabled-future")) {
     const dateForOnChange = new Date(`${currentYear}-${currentMonth + 1}-${event.currentTarget.dataset.day} 00:00:00`)
   
     setSelectedDate(dateForOnChange)
-    onChange?.(dateForOnChange, dateForOnChange.toLocaleDateString())
   }
 }
 
@@ -49,7 +46,6 @@ export const generateCalendar = ({
   selectedDate,
   currentMonth,
   currentYear,
-  onChange,
   setSelectedDate,
   defaultDate,
   disabledPast,
@@ -87,7 +83,7 @@ export const generateCalendar = ({
             className={`${isSelected ? 'selected' : ""} ${isDisabledPast || disabled ? 'disabled-past' : ""} ${isDisabledFuture || disabled ? 'disabled-future' : ""}`}
             data-day={dayCounter}
             disabled={disabled}
-            onClick={(event) => handleClick(event, { currentMonth, currentYear, setSelectedDate, onChange })}
+            onClick={(event) => handleClick(event, { currentMonth, currentYear, setSelectedDate })}
             type="button"
           >
             {dayCounter}
